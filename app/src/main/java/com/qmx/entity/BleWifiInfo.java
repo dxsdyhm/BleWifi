@@ -45,10 +45,10 @@ public class BleWifiInfo extends BaseBleData {
         byte[] ssid=new byte[WIFI_LEN_MAX];
         byte[] pwd=new byte[WIFI_LEN_MAX];
         if(!TextUtils.isEmpty(wifiSSID)){
-            System.arraycopy(wifiSSID.getBytes(),0,ssid,0,WIFI_LEN_MAX);
+            System.arraycopy(wifiSSID.getBytes(),0,ssid,0,wifiSSID.getBytes().length);
         }
         if(!TextUtils.isEmpty(wifiPwd)){
-            System.arraycopy(wifiPwd.getBytes(),0,pwd,0,WIFI_LEN_MAX);
+            System.arraycopy(wifiPwd.getBytes(),0,pwd,0,wifiPwd.getBytes().length);
         }
         return ByteUtils.byteMerger(ssid,pwd);
     }
