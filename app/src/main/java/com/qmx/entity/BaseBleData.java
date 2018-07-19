@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.qmx.utils.ByteUtils;
 
+
 public abstract class BaseBleData {
     public byte cmd;
     public byte[] data;
@@ -29,6 +30,9 @@ public abstract class BaseBleData {
         }
     }
 
+    public void init(){
+        paseData(this.data);
+    }
     public abstract void paseData(byte[] realData);
     public abstract byte[] setData();
 

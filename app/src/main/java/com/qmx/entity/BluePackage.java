@@ -38,11 +38,6 @@ public class BluePackage {
         }
     }
 
-    public BluePackage(byte[] data,int type){
-        this.magic=MAGIC_VALUE;
-        this.data=data;
-    }
-
     public boolean isCorrectMagic(){
         return this.magic == MAGIC_VALUE;
     }
@@ -87,7 +82,6 @@ public class BluePackage {
                 value = (byte) (value ^ data[i]);
             }
         }
-        Log.e("dxsTest","value:"+value+"  xor:"+xor);
         return value == xor;
     }
 

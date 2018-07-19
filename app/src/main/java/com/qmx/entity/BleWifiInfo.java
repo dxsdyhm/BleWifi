@@ -2,8 +2,12 @@ package com.qmx.entity;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.qmx.utils.ByteUtils;
+
+import java.util.Arrays;
+
 
 /**
  * 蓝牙指令中的配网指令数据
@@ -19,13 +23,20 @@ public class BleWifiInfo extends BaseBleData {
         this.wifiPwd = wifiPwd;
     }
 
+    public BleWifiInfo(@NonNull byte[] data) {
+        super(data);
+        init();
+    }
+
     @Override
     public void paseData(byte[] realData) {
         if(realData.length>=WIFI_LEN_MAX*2){
             byte[] ssid= ByteUtils.subBytes(realData,0,WIFI_LEN_MAX);
-            wifiPwd=new String(ssid).trim();
-            byte[] pwd=ByteUtils.subBytes(realData,WIFI_LEN_MAX+1,WIFI_LEN_MAX);
-            wifiPwd=new String(pwd).trim();
+            this.wifiSSID=new String(ssid).trim();
+            byte[] pwd=ByteUtils.subBytes(realData,WIFI_LEN_MAX,WIFI_LEN_MAX);
+            this.wifiPwd=new String(pwd).trim();
+        }else {
+            Log.e("dxsTest","not wifi data:"+Arrays.toString(realData));
         }
     }
 
