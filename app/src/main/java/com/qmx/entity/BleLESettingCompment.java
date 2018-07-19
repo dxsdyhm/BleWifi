@@ -3,12 +3,11 @@ package com.qmx.entity;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BleLESettingCompment {
     private byte[] allData;
-    private Map<Integer,BluetoothLESetting> list=new HashMap<Integer, BluetoothLESetting>();
+    private Map<Integer,BluePackage> list=new HashMap<Integer, BluePackage>();
 
     public BleLESettingCompment(byte[] allData) {
         this.allData = allData;
@@ -26,7 +25,7 @@ public class BleLESettingCompment {
                     currentLen=allData.length%BleConfig.BLE_LE_SET_DATA_LENGTH;
                 }
                 byte[] send=subBytes(allData,i*BleConfig.BLE_LE_SET_DATA_LENGTH,currentLen);
-                BluetoothLESetting setting=new BluetoothLESetting(send,1);
+                BluePackage setting=new BluePackage(send,1);
                 if(i==0){
                     setting.setStartPackage(true);
                 }
@@ -47,11 +46,11 @@ public class BleLESettingCompment {
         this.allData = allData;
     }
 
-    public Map<Integer, BluetoothLESetting> getList() {
+    public Map<Integer, BluePackage> getList() {
         return list;
     }
 
-    public void setList(Map<Integer, BluetoothLESetting> list) {
+    public void setList(Map<Integer, BluePackage> list) {
         this.list = list;
     }
 

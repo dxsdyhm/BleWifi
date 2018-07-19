@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.Arrays;
 
-public class BluetoothLESetting {
+public class BluePackage {
     public static byte MAGIC_VALUE = (byte) ('B' + 'T');
     private static byte INDEX_SBIT=0;
     private static byte INDEX_EBIT = 1;
@@ -16,34 +16,29 @@ public class BluetoothLESetting {
     private byte identification;//标识   sbit:bit1 | ebit:bit1 | exh:bit1 | ver:bit2 | reserv:bit3
     private byte[] data;//数据项,数据项长度为本次蓝牙接收到的数据减去 PROT_BT_COMMU_TOP_S长度
 
-    public BluetoothLESetting() {
+    public BluePackage() {
     }
 
-    public BluetoothLESetting(byte magic, byte xor, byte identification, byte[] data) {
+    public BluePackage(byte magic, byte xor, byte identification, byte[] data) {
         this.magic = magic;
         this.xor = xor;
         this.identification = identification;
         this.data = data;
     }
 
-    public BluetoothLESetting(byte[] data){
+    public BluePackage(byte[] data){
         if(data.length>3){
             this.magic=data[0];
             this.xor=data[1];
             this.identification=data[2];
             this.data= new byte[data.length-3];
-            System.arraycopy(data,2,this.data,0,this.data.length);
+            System.arraycopy(data,3,this.data,0,this.data.length);
         }else {
-            Log.e("dxsTest","BluetoothLESetting init error:"+Arrays.toString(data));
+            Log.e("dxsTest","BluePackage init error:"+Arrays.toString(data));
         }
     }
 
-    /**
-     * 残缺版数据
-     * @param data
-     * @param type
-     */
-    public BluetoothLESetting(byte[] data,int type){
+    public BluePackage(byte[] data,int type){
         this.magic=MAGIC_VALUE;
         this.data=data;
     }
@@ -92,6 +87,7 @@ public class BluetoothLESetting {
                 value = (byte) (value ^ data[i]);
             }
         }
+        Log.e("dxsTest","value:"+value+"  xor:"+xor);
         return value == xor;
     }
 
@@ -116,7 +112,6 @@ public class BluetoothLESetting {
             for (int i=2;i<settingData.length;i++) {
                 xor = (byte) (xor ^ settingData[i]);
             }
-            Log.e("dxsTest","xor:"+xor);
         }
         settingData[1] = xor;
         return settingData;

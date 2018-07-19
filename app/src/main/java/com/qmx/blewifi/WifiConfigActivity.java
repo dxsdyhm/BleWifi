@@ -1,8 +1,5 @@
 package com.qmx.blewifi;
 
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.hardware.SensorEventListener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,19 +14,14 @@ import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.qmx.entity.BleConfig;
 import com.qmx.entity.BleLESettingCompment;
-import com.qmx.entity.BluetoothLESetting;
-import com.qmx.eventaction.BleConfigState;
+import com.qmx.entity.BleWifiInfo;
+import com.qmx.entity.BluePackage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,7 +64,7 @@ public class WifiConfigActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void showConfigState(BluetoothLESetting setting){
+    public void showConfigState(BluePackage setting){
         Log.e("dxsTest","succ:"+String.valueOf(setting.getData()));
         txState.append(Arrays.toString(setting.getData()));
         txState.append("\n");
@@ -82,9 +74,9 @@ public class WifiConfigActivity extends AppCompatActivity {
     public void onViewClicked() {
         wifiname = etWifiname.getText().toString().trim();
         wifiPwd = etWifipwd.getText().toString().trim();
-        String t=wifiname+wifiPwd;
-        compment=new BleLESettingCompment(t.getBytes());
-        Log.e("dxsTest","realdata:"+Arrays.toString(t.getBytes()));
+        BleWifiInfo info=new BleWifiInfo(wifiname,wifiPwd);
+        compment=new BleLESettingCompment(info.getRealData());
+        Log.e("dxsTest","realdata:"+Arrays.toString(info.getRealData()));
         sendData(0);
     }
 
@@ -92,7 +84,7 @@ public class WifiConfigActivity extends AppCompatActivity {
         if(!compment.getList().containsKey(position)){
             return;
         }
-        final BluetoothLESetting setting=compment.getList().get(position);
+        final BluePackage setting=compment.getList().get(position);
         BleManager.getInstance().write(
                 device,
                 BleConfig.UUID_SERVER,
