@@ -13,4 +13,20 @@ public class ByteUtils {
         System.arraycopy(src, begin, bs, 0, count);
         return bs;
     }
+
+    public static int byteArrayToInt(byte[] b,int offset) {
+        return b[3+offset] & 0xFF |
+                (b[2+offset] & 0xFF) << 8 |
+                (b[1+offset] & 0xFF) << 16 |
+                (b[0+offset] & 0xFF) << 24;
+    }
+
+    public static byte[] intToByteArray(int a) {
+        return new byte[]{
+                (byte) ((a >> 24) & 0xFF),
+                (byte) ((a >> 16) & 0xFF),
+                (byte) ((a >> 8) & 0xFF),
+                (byte) (a & 0xFF)
+        };
+    }
 }

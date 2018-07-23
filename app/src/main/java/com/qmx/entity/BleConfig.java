@@ -8,6 +8,7 @@ public class BleConfig {
 
     public static class CMD{
         public static final int BLE_CMD_WIFI=1;
+        public static final int BLE_CMD_WIFI_STATE=2;
     }
     /**分包数据长度**/
     public static final int BLE_LE_DATA_LENGTH = 20;

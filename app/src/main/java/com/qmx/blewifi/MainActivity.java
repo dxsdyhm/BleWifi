@@ -1,38 +1,38 @@
 package com.qmx.blewifi;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Button;
 
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
 import com.qmx.adapter.BleDeviceAdapter;
-import com.qmx.adapter.bleAdapter;
-import com.qmx.entity.bleViewMode;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.btn_connect)
+    Button btnConnect;
     private RecyclerView rcBle;
     private MultiTypeAdapter adapter;
     private Items items;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         BleManager.getInstance().init(getApplication());
         initUI();
         adapter.setItems(items);
@@ -40,11 +40,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        BleManager.getInstance().enableBluetooth();
         BleManager.getInstance().scan(new BleScanCallback() {
             @Override
             public void onScanStarted(boolean success) {
                 // 开始扫描（主线程）
-                Log.e("dxsTest","success:"+success);
+                Log.e("dxsTest", "success:" + success);
             }
 
             @Override
@@ -62,11 +63,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        rcBle=findViewById(R.id.rc_ble);
+        rcBle = findViewById(R.id.rc_ble);
         adapter = new MultiTypeAdapter();
         adapter.register(BleDevice.class, new BleDeviceAdapter());
         rcBle.setLayoutManager(new LinearLayoutManager(this));
         items = new Items();
         rcBle.setAdapter(adapter);
+    }
+
+    @OnClick(R.id.btn_connect)
+    public void onViewClicked() {
+        startActivity(new Intent(MainActivity.this,ConnectWifiActivity.class));
     }
 }
