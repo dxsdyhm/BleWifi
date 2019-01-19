@@ -24,6 +24,8 @@ import me.drakeet.multitype.MultiTypeAdapter;
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btn_connect)
     Button btnConnect;
+    @BindView(R.id.btn_oldblue)
+    Button btnOldblue;
     private RecyclerView rcBle;
     private MultiTypeAdapter adapter;
     private Items items;
@@ -73,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_connect)
     public void onViewClicked() {
-        startActivity(new Intent(MainActivity.this,ConnectWifiActivity.class));
+        startActivity(new Intent(MainActivity.this, ConnectWifiActivity.class));
+    }
+
+    @OnClick(R.id.btn_oldblue)
+    public void onToOldBlue() {
+        startActivity(new Intent(MainActivity.this, OldBlueActivity.class));
     }
 }

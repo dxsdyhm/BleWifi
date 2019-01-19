@@ -14,6 +14,7 @@ import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
+import com.qmx.blewifi.OldBlueConfigActivity;
 import com.qmx.blewifi.R;
 import com.qmx.blewifi.WifiConfigActivity;
 import com.qmx.entity.bleViewMode;
@@ -34,6 +35,10 @@ public class BleDeviceAdapter extends ItemViewBinder<BleDevice,BleDeviceAdapter.
         holder.text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                Intent intent=new Intent();
+//                intent.setClass(holder.text.getContext(), OldBlueConfigActivity.class);
+//                intent.putExtra(item.getClass().getSimpleName(),item);
+//                holder.text.getContext().startActivity(intent);
                 BleManager.getInstance().connect(item, new BleGattCallback() {
                     @Override
                     public void onStartConnect() {

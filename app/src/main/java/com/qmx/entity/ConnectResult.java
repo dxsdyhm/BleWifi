@@ -1,5 +1,6 @@
 package com.qmx.entity;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.qmx.utils.ByteUtils;
@@ -15,8 +16,29 @@ public class ConnectResult extends BaseBleData {
     private byte connectState=0;//正在联网 1 success 其他值:error
     private int errorCode;
 
+    public ConnectResult(@NonNull byte[] data) {
+        super(data);
+    }
+
     public ConnectResult(byte connectState, int errorCode) {
+        cmd=BleConfig.CMD.BLE_CMD_WIFI_STATE;
         this.connectState = connectState;
+        this.errorCode = errorCode;
+    }
+
+    public byte getConnectState() {
+        return connectState;
+    }
+
+    public void setConnectState(byte connectState) {
+        this.connectState = connectState;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
         this.errorCode = errorCode;
     }
 

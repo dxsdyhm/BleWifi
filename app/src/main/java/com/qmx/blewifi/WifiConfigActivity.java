@@ -76,12 +76,13 @@ public class WifiConfigActivity extends AppCompatActivity {
                         // 打开通知后，设备发过来的数据将在这里出现
                         Log.e("dxsTest","onCharacteristicChanged"+Arrays.toString(data));
                         if(data[0]==2){
-                            if(data[1]==0){
+                            ConnectResult result=new ConnectResult(data);
+                            if(result.getConnectState()==0){
                                 updateUI("正在连接-->");
-                            }else if(data[1]==1) {
+                            }else if(result.getConnectState()==1) {
                                 updateUI("连接成功-->");
                             }else {
-                                updateUI("连接失败-->");
+                                updateUI("连接失败-->"+result.getErrorCode());
                             }
                         }
                     }
