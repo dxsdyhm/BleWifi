@@ -36,6 +36,9 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Arrays;
 import java.util.UUID;
 
+/**
+ * 仅供测试
+ */
 public class GattServerActivity extends AppCompatActivity {
     public static final UUID UUID_SERVER=UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
     public static UUID UUID_CHARREAD = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
