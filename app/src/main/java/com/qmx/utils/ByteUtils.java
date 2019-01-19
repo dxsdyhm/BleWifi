@@ -1,5 +1,7 @@
 package com.qmx.utils;
 
+import java.nio.ByteBuffer;
+
 public class ByteUtils {
     public static byte[] byteMerger(byte[] bt1, byte[] bt2){
         byte[] bt3 = new byte[bt1.length+bt2.length];
@@ -29,4 +31,12 @@ public class ByteUtils {
                 (byte) (a & 0xFF)
         };
     }
+
+    //byte 数组与 long 的相互转换
+    public static byte[] longToBytes(long x) {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.putLong(0, x);
+        return buffer.array();
+    }
+
 }
