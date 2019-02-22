@@ -39,4 +39,5 @@ dependencies {
     //两个库都可以使用
     implementation 'com.thanosfisherman.wifiutils:wifiutils:1.3.7'
     implementation 'com.github.jflavio1:WifiConnector:v1.7'
+    implementation 'com.blankj:utilcode:1.22.1'
 }

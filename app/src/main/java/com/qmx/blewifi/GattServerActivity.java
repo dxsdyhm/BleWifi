@@ -59,7 +59,7 @@ public class GattServerActivity extends AppCompatActivity {
     private BluetoothDevice currentDevice;
 
     private byte[] result=new byte[0];
-
+    BleBroadData data=new BleBroadData();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,11 +119,12 @@ public class GattServerActivity extends AppCompatActivity {
         AdvertiseData advertiseData = new AdvertiseData.Builder()
                 .setIncludeDeviceName(true)
                 .setIncludeTxPowerLevel(true)
+                .addManufacturerData(0x4c, data.getByte())
                 .build();
 
         AdvertiseData scanResponseData = new AdvertiseData.Builder()
                 .addServiceUuid(new ParcelUuid(UUID_SERVER))
-                .addServiceData(new ParcelUuid(UUID_SERVER),new BleBroadData().getByte())
+                .addServiceData(new ParcelUuid(UUID_SERVER),data.getByte())
                 .setIncludeTxPowerLevel(true)
                 .build();
 
@@ -174,9 +175,11 @@ public class GattServerActivity extends AppCompatActivity {
         public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
             Log.e(TAG, String.format("onCharacteristicReadRequest：device name = %s, address = %s", device.getName(), device.getAddress()));
             Log.e(TAG, String.format("onCharacteristicReadRequest：requestId = %s, offset = %s", requestId, offset));
-
-            bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, characteristic.getValue());
-//            super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
+            if(characteristic.getUuid().equals(UUID_CHARREAD)){
+                bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, data.getByte());
+            }else {
+                bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, characteristic.getValue());
+            }
         }
 
         /**

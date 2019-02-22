@@ -17,5 +17,10 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_client"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+    <Button
+        android:id="@+id/btn_unzip"
+        android:text="解压测试"
+        app:layout_constraintTop_toBottomOf="@+id/btn_server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </android.support.constraint.ConstraintLayout>
