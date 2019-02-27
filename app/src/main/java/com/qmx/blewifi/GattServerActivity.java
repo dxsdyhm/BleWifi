@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.Utils;
 import com.clj.fastble.BleManager;
 import com.qmx.entity.BleBroadData;
 import com.qmx.entity.BleConfig;
@@ -41,8 +42,9 @@ import java.util.UUID;
  */
 public class GattServerActivity extends AppCompatActivity {
     public static final UUID UUID_SERVER=UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-    public static UUID UUID_CHARREAD = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
+    public static UUID UUID_CHARNOTIFY = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
     public static UUID UUID_CHARWRITE = UUID.fromString("0000fff2-0000-1000-8000-00805f9b34fb");
+    public static UUID UUID_CHARREAD = UUID.fromString("0000fff3-0000-1000-8000-00805f9b34fb");
     public static UUID UUID_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     private Button btnOpen;
@@ -57,6 +59,8 @@ public class GattServerActivity extends AppCompatActivity {
     BluetoothLeAdvertiser bluetoothLeAdvertiser;
     BluetoothGattService service;
     private BluetoothDevice currentDevice;
+    BluetoothGattCharacteristic characteristicWrite;
+    BluetoothGattCharacteristic characteristicNotify;
 
     private byte[] result=new byte[0];
     BleBroadData data=new BleBroadData();
@@ -86,6 +90,12 @@ public class GattServerActivity extends AppCompatActivity {
                 },5000);
             }
         });
+        findViewById(R.id.btn_notify).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendToClient(ByteUtils.longToBytes(System.currentTimeMillis()));
+            }
+        });
     }
 
     private void initServices(Context context) {
@@ -98,12 +108,16 @@ public class GattServerActivity extends AppCompatActivity {
         service.addCharacteristic(characteristicRead);
 
         //add a write characteristic.
-        BluetoothGattCharacteristic characteristicWrite = new BluetoothGattCharacteristic(UUID_CHARWRITE,
+        characteristicWrite = new BluetoothGattCharacteristic(UUID_CHARWRITE,
                 BluetoothGattCharacteristic.PROPERTY_WRITE |
                         BluetoothGattCharacteristic.PROPERTY_READ |
                         BluetoothGattCharacteristic.PROPERTY_NOTIFY,
                 BluetoothGattCharacteristic.PERMISSION_WRITE);
         service.addCharacteristic(characteristicWrite);
+
+        characteristicNotify=new BluetoothGattCharacteristic(UUID_CHARNOTIFY,BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                BluetoothGattCharacteristic.PERMISSION_READ);
+        service.addCharacteristic(characteristicNotify);
 
         bluetoothGattServer.addService(service);
         Log.e(TAG, "2. initServices ok");
@@ -163,6 +177,11 @@ public class GattServerActivity extends AppCompatActivity {
             Log.e(TAG, String.format("1.onConnectionStateChange：device name = %s, address = %s", device.getName(), device.getAddress()));
             Log.e(TAG, String.format("1.onConnectionStateChange：status = %s, newState =%s ", status, newState));
             super.onConnectionStateChange(device, status, newState);
+            if(newState==0){
+                currentDevice=null;
+            }else if(newState==2){
+                currentDevice=device;
+            }
         }
 
         @Override
@@ -229,8 +248,11 @@ public class GattServerActivity extends AppCompatActivity {
         public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
             Log.e(TAG, String.format("onDescriptorReadRequest：device name = %s, address = %s", device.getName(), device.getAddress()));
             Log.e(TAG, String.format("onDescriptorReadRequest：requestId = %s", requestId));
-//            super.onDescriptorReadRequest(device, requestId, offset, descriptor);
-            bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);
+            if(descriptor.getUuid().equals(UUID_DESCRIPTOR)){
+                bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, data.getByte());
+            }else {
+                bluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, descriptor.getValue());
+            }
         }
 
         @Override
@@ -302,7 +324,10 @@ public class GattServerActivity extends AppCompatActivity {
 
     private void sendToClient(byte[] toClient){
         Log.e(TAG,"sendToClient:"+Arrays.toString(toClient));
-        characteristicRead.setValue(toClient);
-        bluetoothGattServer.notifyCharacteristicChanged(currentDevice, characteristicRead, false);
+        if(currentDevice==null){
+            return;
+        }
+        characteristicNotify.setValue(toClient);
+        bluetoothGattServer.notifyCharacteristicChanged(currentDevice, characteristicNotify, false);
     }
 }
